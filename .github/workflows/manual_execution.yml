@@ -1,0 +1,49 @@
+name: Manual test executor
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on 1 am PST every day
+  schedule:
+    - cron: '0 9 * * *'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      mining_trucks_count:
+        required: true
+        type: number
+        description: 'Number of Mining Trucks'
+        default: 1
+      mining_station_count:
+        required: true
+        type: number
+        description: 'Number of Mining Stations'
+        default: 1
+      simulation_length:
+        required: false
+        type: number
+        description: 'Simulation length in Minutes'
+        default: 4320
+
+jobs:
+  build:
+    name: Environment Setup
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    steps:
+      #########################################################################
+      # Environment Setup
+      #########################################################################
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Update environment
+        run: |
+            pip install -r dependencies_pip.txt
+
+      #########################################################################
+      # Start the test execution
+      #########################################################################
+      - name: Full Test Execution
+        run: |
+          python start.py -n ${{inputs.mining_trucks_count }} -m ${{inputs.mining_station_count }} -l ${{inputs.simulation_length }}
