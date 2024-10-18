@@ -1,7 +1,5 @@
 '''Starter of the Test Execution'''
 import sys
-
-from pytest import Session
 import pytest
 
 

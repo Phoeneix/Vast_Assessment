@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Created pytest execution file
     - Created test cases for testing the code
     - Created the mining operations code
+- **Add_Structure_**
+    - Created in-built test execution Git Workflow
+    - Modified the arguments for manual execustion
+    - Added new negative test cases
 ### Changed
 ### Deprecated
 ### Removed
