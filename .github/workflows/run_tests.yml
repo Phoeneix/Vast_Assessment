@@ -1,24 +1,8 @@
-name: Manual test executor
+name: Execute in built tests
 # Controls when the workflow will run
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    inputs:
-      mining_trucks_count:
-        required: true
-        type: number
-        description: 'Number of Mining Trucks'
-        default: 1
-      mining_station_count:
-        required: true
-        type: number
-        description: 'Number of Mining Stations'
-        default: 1
-      simulation_length:
-        required: false
-        type: number
-        description: 'Simulation length in Minutes'
-        default: 4320
 
 jobs:
   build:
@@ -38,8 +22,8 @@ jobs:
             pip install -r dependencies_pip.txt
 
       #########################################################################
-      # Start manual execution
+      # Start the test execution
       #########################################################################
-      - name: Operation Execution
+      - name: Test Execution
         run: |
-          python start.py -n ${{inputs.mining_trucks_count }} -m ${{inputs.mining_station_count }} -o ${{inputs.simulation_length }}
+          python run_tests.py

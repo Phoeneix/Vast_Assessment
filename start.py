@@ -30,7 +30,7 @@ def ParseArguments():
                         required=True,
                         type=int)
 
-    parser.add_argument('-l',
+    parser.add_argument('-o',
                         help='The length of the operation in minutes',
                         required=False,
                         default=4320,
@@ -51,6 +51,6 @@ if __name__ == '__main__':
     operation = MiningOperation(
         mining_truck_count = args.n,
         mining_station_count = args.m,
-        operation_length = args.l)
+        operation_length = args.o)
 
-    operation.FlowOrganizer()
+    operation.StartOperation()

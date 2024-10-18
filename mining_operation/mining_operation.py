@@ -3,6 +3,7 @@
 import random
 
 from mining_operation.enums import TruckStatus
+from mining_operation.report_generator import ReportGenerator
 
 
 class MiningOperation():
@@ -17,7 +18,7 @@ class MiningOperation():
                  mining_truck_count:int,
                  mining_station_count:int,
                  operation_length:int) -> None:
-        '''Start the mining operation'''
+        '''Initialize the mining operation'''
 
         # Get the mining time for each truck on the site
         self.mining_trucks = {}
@@ -53,7 +54,6 @@ class MiningOperation():
 
     @mining_trucks.setter
     def mining_trucks(self, value:dict):
-        print(f'Setter value: {value}')
         self._mining_trucks = value
 
 
@@ -75,17 +75,17 @@ class MiningOperation():
         self._kill_switch = value
 
 
-    def FlowOrganizer(self) -> bool:
-        '''Method to follow the current status of the mining operation'''
+    def StartOperation(self) -> bool:
+        '''Method to execute the mining operation'''
 
         mining_trucks_count = len(self.mining_trucks)
         mining_stations_count = len(self.mining_stations)
         print(f'OPERATION_LENGTH: {self.OPERATION_LENGTH}')
         print(f'Mining Trucks count: {mining_trucks_count}')
         print(f'Mining Stations count: {mining_stations_count}')
-        assert not (mining_trucks_count == 0 or \
-            mining_stations_count == 0 or \
-            self.OPERATION_LENGTH == 0), \
+        assert not (mining_trucks_count <= 0 or \
+            mining_stations_count <= 0 or \
+            self.OPERATION_LENGTH <= 0), \
             f'One of the key information is missing to start the operation!\nMining Truck Count = {mining_trucks_count}\nMining Stations Count = {mining_stations_count}\nOperation length = {self.OPERATION_LENGTH}'
         while self.elapsed_time <= self.OPERATION_LENGTH and not self.kill_switch:
 
@@ -100,9 +100,9 @@ class MiningOperation():
             if self.mining_trucks[truck_name][1] == 0:
                 self.UpdateTruckStatus(truck_name)
 
-            # print(f'Trucks status: {self.mining_trucks}\n')
-            # print(f'Station status: {self.mining_stations}\n')
-
+        # Generate the reports for the operation
+        ReportGenerator.GenerateForMiningTrucks(self.mining_trucks)
+        ReportGenerator.GenerateForMiningStations(self.mining_stations)
         return True
 
 
@@ -215,7 +215,6 @@ class MiningOperation():
         # Add truck unloading time to the station
         self.UpdateStationStatus(truck_name, next_free_station[0], wait_time)
 
-        print(f'wait_time: {wait_time}')
         if self.OPERATION_LENGTH < wait_time + current_time:
             self.kill_switch = True
         return wait_time
