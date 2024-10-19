@@ -2,6 +2,7 @@
 from sys import maxsize
 
 from config.global_constants import GlobalConstants
+from logger.logger import Logger
 from mining_operation import MiningOperation
 
 
@@ -17,7 +18,7 @@ def test_negative_0_trucks():
             mining_station_count = 1).StartOperation()
     except AssertionError as e:
         error_message = e.args[0]
-    assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
+    assert error_message == expected_message, Logger.Log(f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}')
 
 
 def test_negative_trucks_negative_value():
@@ -32,7 +33,7 @@ def test_negative_trucks_negative_value():
             mining_station_count = 1).StartOperation()
     except AssertionError as e:
         error_message = e.args[0]
-    assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
+    assert error_message == expected_message, Logger.Log(f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}')
 
 
 def test_negative_trucks_input_type():
@@ -47,7 +48,7 @@ def test_negative_trucks_input_type():
             mining_station_count = 1).StartOperation()
     except TypeError as e:
         error_message = e.args[0]
-    assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
+    assert error_message == expected_message, Logger.Log(f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}')
 
 
 def test_negative_0_station():
@@ -62,7 +63,7 @@ def test_negative_0_station():
             mining_station_count = 0).StartOperation()
     except AssertionError as e:
         error_message = e.args[0]
-    assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
+    assert error_message == expected_message, Logger.Log(f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}')
 
 
 def test_negative_stations_negative_value():
@@ -77,7 +78,7 @@ def test_negative_stations_negative_value():
             mining_station_count = -1).StartOperation()
     except AssertionError as e:
         error_message = e.args[0]
-    assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
+    assert error_message == expected_message, Logger.Log(f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}')
 
 
 def test_negative_stations_input_type():
@@ -92,7 +93,7 @@ def test_negative_stations_input_type():
             mining_station_count = 'a').StartOperation()
     except TypeError as e:
         error_message = e.args[0]
-    assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
+    assert error_message == expected_message, Logger.Log(f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}')
 
 
 def test_negative_0_operation_length():
@@ -110,7 +111,7 @@ def test_negative_0_operation_length():
     except AssertionError as e:
         GlobalConstants.OPERATION_LENGTH = original_operation_length
         error_message = e.args[0]
-    assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
+    assert error_message == expected_message, Logger.Log(f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}')
 
 
 def test_negative_operation_length_negative_value():
@@ -128,7 +129,7 @@ def test_negative_operation_length_negative_value():
     except AssertionError as e:
         GlobalConstants.OPERATION_LENGTH = original_operation_length
         error_message = e.args[0]
-    assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
+    assert error_message == expected_message, Logger.Log(f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}')
 
 
 def test_negative_operation_length_input_type():
@@ -146,7 +147,7 @@ def test_negative_operation_length_input_type():
     except TypeError as e:
         GlobalConstants.OPERATION_LENGTH = original_operation_length
         error_message = e.args[0]
-    assert expected_message_part in error_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message part: {expected_message_part}'
+    assert expected_message_part in error_message, Logger.Log(f'The error message is not the expected one!\nActual message: {error_message}\nExpected message part: {expected_message_part}')
 
 
 def test_positive_10_trucks_10_stations():
@@ -157,7 +158,7 @@ def test_positive_10_trucks_10_stations():
     result = MiningOperation(
         mining_truck_count = 10,
         mining_station_count = 10).StartOperation()
-    assert result, 'Test failed to finish as intended!'
+    assert result, Logger.Log('Test failed to finish as intended!')
 
 
 def test_positive_5000_trucks_10_stations():
@@ -169,4 +170,4 @@ def test_positive_5000_trucks_10_stations():
     result = MiningOperation(
         mining_truck_count = 5000,
         mining_station_count = 10).StartOperation()
-    assert result, 'Test failed to finish as intended!'
+    assert result, Logger.Log('Test failed to finish as intended!')

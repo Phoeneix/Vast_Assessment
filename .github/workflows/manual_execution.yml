@@ -19,6 +19,14 @@ on:
         type: number
         description: 'Simulation length in Minutes'
         default: 4320
+      log_level:
+        required: false
+        type: choice
+        description: 'Logging level for the simulation'
+        default: info
+        options:
+        - info
+        - debug
 
 jobs:
   build:
@@ -42,4 +50,4 @@ jobs:
       #########################################################################
       - name: Operation Execution
         run: |
-          python start.py -n ${{inputs.mining_trucks_count }} -m ${{inputs.mining_station_count }} -o ${{inputs.simulation_length }}
+          python start.py -n ${{inputs.mining_trucks_count }} -m ${{inputs.mining_station_count }} -o ${{inputs.simulation_length }} -l ${{inputs.log_level }}

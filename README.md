@@ -11,10 +11,15 @@ User needs to provide number of mining trucks and mining stations for "Manual Te
 (Optional) User can also modify the operation length, that may differ from the default ones.
 (Optional) User can also modify the log level to get details of the inner workings in case of debug.
 
-- How to execute on local computer:
+- How to execute the manual test on local computer:
 Input arguments:
 	- n = number of mining trucks
     - m = number of mining stations
     - o = operation length
+    - l = level of log (INFO, DEBUG), default is INFO
 
->```python start.py -n 50 -m 5 -o 4320```
+>```python start.py -n 50 -m 5 -o 4320 -l DEBUG```
+
+- How to execute the built in tests on local computer:
+
+>```python run_tests.py```
