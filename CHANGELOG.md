@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
-- **Add_Structure_**
+- **Add_Structure**
     - Updated README
     - Updated gitignore
     - Created Pull Request Template
@@ -15,10 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Created pytest execution file
     - Created test cases for testing the code
     - Created the mining operations code
-- **Add_Structure_**
+- **Add_Structure**
     - Created in-built test execution Git Workflow
     - Modified the arguments for manual execustion
     - Added new negative test cases
+- **Add_Test_Cases**
+    - Created in-built test execution Git Workflow
+    - Modified the arguments for manual execustion
+    - Added new negative test cases
+- **Add_Report_Generation**
+    - Created method for file creation and saving into files
+    - Created final report creation class
+    - Added global constants
+    - Updated README.MD file
 ### Changed
 ### Deprecated
 ### Removed

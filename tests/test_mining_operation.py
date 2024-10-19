@@ -1,10 +1,10 @@
 '''The file for the test cases'''
 from sys import maxsize
 
+from config.global_constants import GlobalConstants
 from mining_operation import MiningOperation
 
-# Constants
-OPERATION_LENGTH = 4320
+
 def test_negative_0_trucks():
     '''Negative Test case to test of 0 trucks input'''
 
@@ -14,8 +14,7 @@ def test_negative_0_trucks():
     try:
         operation = MiningOperation(
             mining_truck_count = 0,
-            mining_station_count = 1,
-            operation_length = OPERATION_LENGTH).StartOperation()
+            mining_station_count = 1).StartOperation()
     except AssertionError as e:
         error_message = e.args[0]
     assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
@@ -30,8 +29,7 @@ def test_negative_trucks_negative_value():
     try:
         MiningOperation(
             mining_truck_count = -1,
-            mining_station_count = 1,
-            operation_length = OPERATION_LENGTH).StartOperation()
+            mining_station_count = 1).StartOperation()
     except AssertionError as e:
         error_message = e.args[0]
     assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
@@ -46,8 +44,7 @@ def test_negative_trucks_input_type():
     try:
         operation = MiningOperation(
             mining_truck_count = 'a',
-            mining_station_count = 1,
-            operation_length = OPERATION_LENGTH).StartOperation()
+            mining_station_count = 1).StartOperation()
     except TypeError as e:
         error_message = e.args[0]
     assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
@@ -62,8 +59,7 @@ def test_negative_0_station():
     try:
         MiningOperation(
             mining_truck_count = 1,
-            mining_station_count = 0,
-            operation_length = OPERATION_LENGTH).StartOperation()
+            mining_station_count = 0).StartOperation()
     except AssertionError as e:
         error_message = e.args[0]
     assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
@@ -78,8 +74,7 @@ def test_negative_stations_negative_value():
     try:
         MiningOperation(
             mining_truck_count = 1,
-            mining_station_count = -1,
-            operation_length = OPERATION_LENGTH).StartOperation()
+            mining_station_count = -1).StartOperation()
     except AssertionError as e:
         error_message = e.args[0]
     assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
@@ -92,10 +87,9 @@ def test_negative_stations_input_type():
     error_message = ''
     expected_message = "'str' object cannot be interpreted as an integer"
     try:
-        operation = MiningOperation(
+        MiningOperation(
             mining_truck_count = 1,
-            mining_station_count = 'a',
-            operation_length = OPERATION_LENGTH).StartOperation()
+            mining_station_count = 'a').StartOperation()
     except TypeError as e:
         error_message = e.args[0]
     assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
@@ -108,11 +102,13 @@ def test_negative_0_operation_length():
     error_message = ''
     expected_message = 'One of the key information is missing to start the operation!\nMining Truck Count = 1\nMining Stations Count = 1\nOperation length = 0'
     try:
+        original_operation_length = GlobalConstants.OPERATION_LENGTH
+        GlobalConstants.OPERATION_LENGTH = 0
         MiningOperation(
             mining_truck_count = 1,
-            mining_station_count = 1,
-            operation_length = 0).StartOperation()
+            mining_station_count = 1).StartOperation()
     except AssertionError as e:
+        GlobalConstants.OPERATION_LENGTH = original_operation_length
         error_message = e.args[0]
     assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
 
@@ -124,11 +120,13 @@ def test_negative_operation_length_negative_value():
     error_message = ''
     expected_message = 'One of the key information is missing to start the operation!\nMining Truck Count = 1\nMining Stations Count = 1\nOperation length = -1'
     try:
+        original_operation_length = GlobalConstants.OPERATION_LENGTH
+        GlobalConstants.OPERATION_LENGTH = -1
         MiningOperation(
             mining_truck_count = 1,
-            mining_station_count = 1,
-            operation_length = -1).StartOperation()
+            mining_station_count = 1).StartOperation()
     except AssertionError as e:
+        GlobalConstants.OPERATION_LENGTH = original_operation_length
         error_message = e.args[0]
     assert error_message == expected_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
 
@@ -140,13 +138,15 @@ def test_negative_operation_length_input_type():
     error_message = ''
     expected_message_part = "not supported between instances of"
     try:
-        operation = MiningOperation(
+        original_operation_length = GlobalConstants.OPERATION_LENGTH
+        GlobalConstants.OPERATION_LENGTH = 'OPERATION_LENGTH'
+        MiningOperation(
             mining_truck_count = 1,
-            mining_station_count = 1,
-            operation_length = 'OPERATION_LENGTH').StartOperation()
+            mining_station_count = 1).StartOperation()
     except TypeError as e:
+        GlobalConstants.OPERATION_LENGTH = original_operation_length
         error_message = e.args[0]
-    assert expected_message_part in error_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message: {expected_message}'
+    assert expected_message_part in error_message, f'The error message is not the expected one!\nActual message: {error_message}\nExpected message part: {expected_message_part}'
 
 
 def test_positive_10_trucks_10_stations():
@@ -156,8 +156,7 @@ def test_positive_10_trucks_10_stations():
     print('\n\n\n================================== test_positive_10_trucks_10_stations =================================================')
     result = MiningOperation(
         mining_truck_count = 10,
-        mining_station_count = 10,
-        operation_length = OPERATION_LENGTH).StartOperation()
+        mining_station_count = 10).StartOperation()
     assert result, 'Test failed to finish as intended!'
 
 
@@ -169,6 +168,5 @@ def test_positive_5000_trucks_10_stations():
     print('\n\n\n=================================== test_positive_1000_trucks_1_stations ===============================================')
     result = MiningOperation(
         mining_truck_count = 5000,
-        mining_station_count = 10,
-        operation_length = OPERATION_LENGTH).StartOperation()
+        mining_station_count = 10).StartOperation()
     assert result, 'Test failed to finish as intended!'
