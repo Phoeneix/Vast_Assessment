@@ -2,6 +2,7 @@
 
 import random
 
+from config.global_constants import GlobalConstants
 from mining_operation.enums import TruckStatus
 from mining_operation.report_generator import ReportGenerator
 
@@ -12,19 +13,19 @@ class MiningOperation():
     # Constants
     UNLOAD_TIME = 5         # The Mining Trucks unload time
     TRAVEL_TIME = 30        # The Mining Trucks travel time to the stations
-    OPERATION_LENGTH = 0    # The Mining Operation's length
 
     def __init__(self,
                  mining_truck_count:int,
-                 mining_station_count:int,
-                 operation_length:int) -> None:
+                 mining_station_count:int) -> None:
         '''Initialize the mining operation'''
 
         # Get the mining time for each truck on the site
         self.mining_trucks = {}
+        self._mining_trucks_history = {}
         for i in range(mining_truck_count):
             mining_length = GetMiningLength()
             self.mining_trucks[i] = (TruckStatus.MINING, mining_length)
+            self.mining_trucks_history = i, self.mining_trucks[i]
 
         # Setting up the mining stations
         self.mining_stations = {}
@@ -35,8 +36,7 @@ class MiningOperation():
         self.elapsed_time = 0
 
         # Setting the operation lenght constant
-        self.OPERATION_LENGTH = operation_length
-        self.kill_switch = False
+        self.operation_ended = False
 
 
     @property
@@ -58,6 +58,24 @@ class MiningOperation():
 
 
     @property
+    def mining_trucks_history(self) -> dict:
+        return self._mining_trucks_history
+
+    @mining_trucks_history.setter
+    def mining_trucks_history(self, value):
+        if type(value) is dict:
+            self._mining_trucks_history = value
+        elif type(value) is tuple:
+            truck_id, data = value
+            if truck_id not in self._mining_trucks_history:
+                self._mining_trucks_history[truck_id] = {}
+                latest_event_id = 0
+            else:
+                latest_event_id = int(max(self._mining_trucks_history[truck_id]))
+            self._mining_trucks_history[truck_id][latest_event_id + 1] = data
+
+
+    @property
     def mining_stations(self) -> dict:
         return self._mining_stations
 
@@ -67,12 +85,12 @@ class MiningOperation():
 
 
     @property
-    def kill_switch(self) -> bool:
-        return self._kill_switch
+    def operation_ended(self) -> bool:
+        return self._operation_ended
 
-    @kill_switch.setter
-    def kill_switch(self, value:bool):
-        self._kill_switch = value
+    @operation_ended.setter
+    def operation_ended(self, value:bool):
+        self._operation_ended = value
 
 
     def StartOperation(self) -> bool:
@@ -80,14 +98,14 @@ class MiningOperation():
 
         mining_trucks_count = len(self.mining_trucks)
         mining_stations_count = len(self.mining_stations)
-        print(f'OPERATION_LENGTH: {self.OPERATION_LENGTH}')
+        print(f'OPERATION_LENGTH: {GlobalConstants.OPERATION_LENGTH}')
         print(f'Mining Trucks count: {mining_trucks_count}')
-        print(f'Mining Stations count: {mining_stations_count}')
+        print(f'Mining Stations count: {mining_stations_count}\n')
         assert not (mining_trucks_count <= 0 or \
             mining_stations_count <= 0 or \
-            self.OPERATION_LENGTH <= 0), \
-            f'One of the key information is missing to start the operation!\nMining Truck Count = {mining_trucks_count}\nMining Stations Count = {mining_stations_count}\nOperation length = {self.OPERATION_LENGTH}'
-        while self.elapsed_time <= self.OPERATION_LENGTH and not self.kill_switch:
+            GlobalConstants.OPERATION_LENGTH <= 0), \
+            f'One of the key information is missing to start the operation!\nMining Truck Count = {mining_trucks_count}\nMining Stations Count = {mining_stations_count}\nOperation length = {GlobalConstants.OPERATION_LENGTH}'
+        while self.elapsed_time <= GlobalConstants.OPERATION_LENGTH and not self.operation_ended:
 
             # Get the truck that will finish it's job next and when
             truck_name = self.FindNextTruckToFinish()
@@ -95,13 +113,15 @@ class MiningOperation():
 
             # Forward all the truck's time to that point
             self.ForwardTimeWith(time_forward)
+            if self.operation_ended:
+                break
 
             # Update the truck's status that will finish it's job to the next job
             if self.mining_trucks[truck_name][1] == 0:
                 self.UpdateTruckStatus(truck_name)
 
         # Generate the reports for the operation
-        ReportGenerator.GenerateForMiningTrucks(self.mining_trucks)
+        ReportGenerator.GenerateForMiningTrucks(self.mining_trucks_history)
         ReportGenerator.GenerateForMiningStations(self.mining_stations)
         return True
 
@@ -145,6 +165,9 @@ class MiningOperation():
 
         # Increase the elapsed time to reflect the timeline correctly
         self.elapsed_time += time_forward
+        if GlobalConstants.OPERATION_LENGTH <= self.elapsed_time:
+            self.operation_ended = True
+
 
 
     def UpdateTruckStatus(self, truck_name:str):
@@ -180,6 +203,7 @@ class MiningOperation():
             raise NotImplementedError(f'Status "{status}" handling not implemented!')
 
         self.mining_trucks[truck_name] = (new_status, new_value)
+        self.mining_trucks_history = truck_name, (new_status, new_value)
 
 
     def QueueForStation(self, truck_name:str) -> int:
@@ -215,8 +239,8 @@ class MiningOperation():
         # Add truck unloading time to the station
         self.UpdateStationStatus(truck_name, next_free_station[0], wait_time)
 
-        if self.OPERATION_LENGTH < wait_time + current_time:
-            self.kill_switch = True
+        if GlobalConstants.OPERATION_LENGTH < wait_time + current_time:
+            self.operation_ended = True
         return wait_time
 
 
@@ -229,8 +253,12 @@ class MiningOperation():
 
         # Add the time stamps to the station's queue, so other trucks will know those time slots are taken by which truck
         for time_stamp in range(star_time, end_time):
+            if GlobalConstants.OPERATION_LENGTH < time_stamp:
+                break
             self.mining_stations[station_name][time_stamp] = truck_name
 
 
 def GetMiningLength(min_length:int=60, max_length:int=300) -> int:
+    '''Private method to get a randimized number for mining'''
+
     return random.randint(min_length, max_length)

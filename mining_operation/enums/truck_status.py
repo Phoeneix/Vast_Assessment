@@ -1,4 +1,7 @@
+'''The truck status enum'''
+
 from enum import Enum
+
 
 class TruckStatus(Enum):
     '''The truck status enum'''

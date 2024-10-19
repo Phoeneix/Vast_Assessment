@@ -2,9 +2,10 @@
 
 import argparse
 import sys
+import datetime
 
+from config.global_constants import GlobalConstants
 from mining_operation import MiningOperation
-
 
 
 def ParseArguments():
@@ -41,16 +42,16 @@ def ParseArguments():
 
 
 if __name__ == '__main__':
-    '''
-    The main executor
-    '''
+    '''The main executor'''
 
     args = ParseArguments()
-    print(args)
+
+    # Setting global constants
+    GlobalConstants.OPERATION_LENGTH = args.o
+    GlobalConstants.CURRENT_TIME = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 
     operation = MiningOperation(
         mining_truck_count = args.n,
-        mining_station_count = args.m,
-        operation_length = args.o)
+        mining_station_count = args.m)
 
     operation.StartOperation()
