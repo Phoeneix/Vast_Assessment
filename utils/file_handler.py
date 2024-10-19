@@ -8,5 +8,5 @@ class FileHandler():
 		'''Method to save data into a specific file'''
 
 		with open(file_name, 'a') as f:
-			f.write(content)
+			f.write(content + '\n')
 			f.close()

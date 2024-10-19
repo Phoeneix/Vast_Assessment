@@ -13,6 +13,7 @@ if __name__ == '__main__':
     # Setting global constants
     GlobalConstants.OPERATION_LENGTH = 4320
     GlobalConstants.CURRENT_TIME = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+    GlobalConstants.LOG_FILE = f'report_builtin_tests_{GlobalConstants.CURRENT_TIME}.log'
 
     # Executing test cases
     exit_code = pytest.main(['-s'])

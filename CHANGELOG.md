@@ -28,6 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Created final report creation class
     - Added global constants
     - Updated README.MD file
+- **Add_logging_for_debug**
+    - Updated README.MD file
+    - Created logger
+    - Added DEBUG outputs
+    - Updated manual execution github worfklow
 ### Changed
 ### Deprecated
 ### Removed

@@ -1,6 +1,8 @@
 '''The file for the mining operation's report generation'''
 
 from config.global_constants import GlobalConstants
+from logger.enums import LogLevel
+from logger.logger import Logger
 from mining_operation.enums import TruckStatus
 from utils.file_handler import FileHandler
 
@@ -20,7 +22,8 @@ class ReportGenerator():
                 truck_data = mining_trucks[truck_id])
         report['summary'] = ReportGenerator.CreateSummary(report)
         ReportGenerator.SaveReportToFile(report)
-        ReportGenerator.PrintReport(report)
+        if GlobalConstants.LOG_LEVEL in [LogLevel.INFO, LogLevel.DEBUG]:
+            ReportGenerator.PrintReport(report)
 
 
     def GenerateForMiningStations(mining_stations:dict):
@@ -35,7 +38,8 @@ class ReportGenerator():
                 station_data = mining_stations[station_id])
         report['summary'] = ReportGenerator.CreateSummary(report)
         ReportGenerator.SaveReportToFile(report)
-        ReportGenerator.PrintReport(report)
+        if GlobalConstants.LOG_LEVEL in [LogLevel.INFO, LogLevel.DEBUG]:
+            ReportGenerator.PrintReport(report)
 
 
     def GenerateForSingleTruck(truck_id:int, truck_data:dict) -> dict:
@@ -147,11 +151,11 @@ class ReportGenerator():
         for id in report:
             FileHandler.SaveIntoFile(
                 content = report[id]['report'],
-                file_name = f'report_{GlobalConstants.CURRENT_TIME}.log')
+                file_name = GlobalConstants.LOG_FILE)
 
 
     def PrintReport(report:dict):
         '''Method to print the report into the console'''
 
         for id in report:
-            print(report[id]['report'])
+            Logger.Log(report[id]['report'])
